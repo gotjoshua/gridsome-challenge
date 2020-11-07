@@ -1,0 +1,7 @@
+{
+  "name": "regen-challenge",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
