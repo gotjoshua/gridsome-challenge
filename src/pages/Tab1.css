@@ -1,0 +1,12 @@
+.author-avatar {
+    margin-right: 16px;
+}
+.error-icon {
+    color: red;
+    margin-bottom: -8px;
+    padding: 5px 10px;
+}
+.token-input {
+    border-bottom: solid 1px purple;
+    width: 600px;
+}

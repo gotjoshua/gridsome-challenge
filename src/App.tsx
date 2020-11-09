@@ -33,19 +33,46 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import { ApolloProvider, ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client'
+import { setContext } from '@apollo/client/link/context'
+
+const httpLink = createHttpLink({
+  uri: 'https://api.github.com/graphql',
+});
+    
+const authLink = setContext((_, { headers }) => {
+    // get the authentication token from local storage if it exists
+    const token = localStorage.getItem('token');
+    // return the headers to the context so httpLink can read them
+    return {
+        headers: {
+        ...headers,
+        authorization: token ? `Bearer ${token}` : "",
+        }
+    }
+});
+
+const client = new ApolloClient({
+    link: authLink.concat(httpLink),
+    cache: new InMemoryCache()
+});
 
 const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>
       <IonTabs>
-        <IonRouterOutlet>
-          <Route path="/tab1" component={Tab1} exact={true} />
-          <Route path="/tab2" component={Tab2} exact={true} />
-          <Route path="/tab3" component={Tab3} />
-          <Route path="/" render={() => <Redirect to="/tab1" />} exact={true} />
-        </IonRouterOutlet>
+        
+          <IonRouterOutlet>
+            <ApolloProvider client={client}>
+              <Route path="/issues" component={Tab1} exact={true} />
+              <Route path="/tab2" component={Tab2} exact={true} />
+              <Route path="/tab3" component={Tab3} />
+              <Route path="/" render={() => <Redirect to="/issues" />} exact={true} />
+            </ApolloProvider>
+          </IonRouterOutlet>
+        
         <IonTabBar slot="bottom">
-          <IonTabButton tab="tab1" href="/tab1">
+          <IonTabButton tab="issues" href="/issues">
             <IonIcon icon={logoGithub} />
             <IonLabel>Issues</IonLabel>
           </IonTabButton>
