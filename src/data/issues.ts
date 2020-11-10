@@ -10,7 +10,7 @@ export const  getIssues = async (repoHandle = "cosmos-sdk", repoOwner = "cosmos"
       
     const authLink = setContext((_, { headers }) => {
         // get the authentication token from local storage if it exists
-        const token = '4930e95e0c50c808098bad6d3cbc2eb4dfd2de58';//localStorage.getItem('token');
+        const token = localStorage.getItem('token');
         // return the headers to the context so httpLink can read them
         return {
             headers: {
