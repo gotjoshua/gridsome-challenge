@@ -48,6 +48,9 @@
       "last 1 safari version"
     ]
   },
+  "eslintConfigComments": {
+    "removed": "following instructions from here: https://doppelmutzi.github.io/react-eslint-prettier-vscode-2020/"
+  },
   "devDependencies": {
     "@capacitor/cli": "2.4.2",
     "prettier": "^2.1.2",
