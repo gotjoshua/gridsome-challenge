@@ -1,6 +1,6 @@
-import { gql } from "@apollo/client"
+import { gql } from '@apollo/client'
 
-export const issueQuery = (repo = "cosmos-sdk", owner= "cosmos") => gql`query {
+export const issueQuery = (repo = 'cosmos-sdk', owner = 'cosmos') => gql`query {
   repository(name: "${repo}", owner: "${owner}") {
     id
     issues(last: 30, states: OPEN, orderBy: {field: CREATED_AT, direction: ASC}) {
@@ -23,4 +23,3 @@ export const issueQuery = (repo = "cosmos-sdk", owner= "cosmos") => gql`query {
     }
   }
 }`
-
