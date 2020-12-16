@@ -1,29 +1,59 @@
 import { issueQuery } from './github.graphql'
-import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client'
+import { ApolloClient, InMemoryCache, createHttpLink, InMemoryCacheConfig } from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
+// import { relayStylePagination } from '@apollo/client/utilities'
+
+const httpLink = createHttpLink({
+  uri: 'https://api.github.com/graphql',
+})
+
+const authLink = setContext((_, { headers }) => {
+  // get the authentication token from local storage if it exists
+  const token = localStorage.getItem('token')
+  // return the headers to the context so httpLink can read them
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : '',
+    },
+  }
+})
+const cacheOptions: InMemoryCacheConfig = {
+  typePolicies: {
+    Repository: {
+      fields: {
+        //relayStylePagination(),
+        issues: {
+          // merge: true,
+
+          // Don't cache separate results based on
+          // any of this field's arguments.
+          keyArgs: false,
+          // Concatenate the incoming list items with
+          // the existing list items.
+          merge(existing = { edges: [] }, incoming = { edges: [] }, { isReference }) {
+            // Correct, thanks to invoking nested merge functions.
+
+            console.log(existing)
+            console.log('incoming: ref?:', isReference(incoming), incoming)
+            return {
+              pageInfo: incoming.pageInfo,
+              edges: [...existing.edges, ...incoming.edges],
+            }
+          },
+        },
+      },
+    },
+  },
+}
+const cache = new InMemoryCache(cacheOptions)
+export const client = new ApolloClient({
+  link: authLink.concat(httpLink),
+  cache,
+})
 
 export const getIssues = async (repoHandle = 'cosmos-sdk', repoOwner = 'cosmos') => {
   const query = issueQuery(repoHandle, repoOwner)
-  const httpLink = createHttpLink({
-    uri: 'https://api.github.com/graphql',
-  })
-
-  const authLink = setContext((_, { headers }) => {
-    // get the authentication token from local storage if it exists
-    const token = localStorage.getItem('token')
-    // return the headers to the context so httpLink can read them
-    return {
-      headers: {
-        ...headers,
-        authorization: token ? `Bearer ${token}` : '',
-      },
-    }
-  })
-
-  const client = new ApolloClient({
-    link: authLink.concat(httpLink),
-    cache: new InMemoryCache(),
-  })
 
   const result = await client.query({
     query,

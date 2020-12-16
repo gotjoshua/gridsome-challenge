@@ -1,9 +1,13 @@
 import { gql } from '@apollo/client'
 
-export const issueQuery = (repo = 'cosmos-sdk', owner = 'cosmos') => gql`query {
+export const issueQuery = (repo = 'cosmos-sdk', owner = 'cosmos') => gql`query repository($after: String){
   repository(name: "${repo}", owner: "${owner}") {
     id
-    issues(last: 30, states: OPEN, orderBy: {field: CREATED_AT, direction: ASC}) {
+    issues(after: $after, first: 10, states: OPEN, orderBy: {field: CREATED_AT, direction: DESC}) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      },
       edges {
         node {
           id
