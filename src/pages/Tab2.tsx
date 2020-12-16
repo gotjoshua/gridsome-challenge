@@ -12,17 +12,21 @@ import {
   IonToolbar,
 } from '@ionic/react'
 import './Tab2.css'
+
 import { searchOutline } from 'ionicons/icons'
 import { StargateClient } from '@cosmjs/stargate'
 
 const apiEndpoint = 'http://18.220.101.192:26657' // ? 1317 ? 26658
+// TODO deal with cors
+
+type WalletInfoArray = Array<{ label: string; value: string | any }>
 
 const Tab2: React.FC = () => {
-  const [walletInfo, setWalletInfo] = useState<Array<{ label: string; value: string | any }>>([])
+  const [walletInfo, setWalletInfo] = useState<WalletInfoArray>([])
   const [address, setAddress] = useState<string>('regen:1x9469lmt5hr6gvtxelfxjzjapqh390jurgp3pq')
 
   const fetchWallet = async (walletAddress = address || '') => {
-    const infoToSet: Array<{ label: string; value: string }> = []
+    const infoToSet: WalletInfoArray = []
     const readOnlyClient = await StargateClient.connect(apiEndpoint)
 
     const height = await readOnlyClient.getHeight()

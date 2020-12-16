@@ -3,7 +3,7 @@ import { IonContent, IonFabButton, IonHeader, IonIcon, IonPage, IonTitle, IonToa
 import './Tab3.css'
 // import { Faucet } from '@cosmjs/faucet/build/types/faucet'
 // import { TokenConfiguration } from '@cosmjs/faucet/build/types/tokenmanager'
-import { DirectSecp256k1Wallet } from '@cosmjs/proto-signing'
+import { DirectSecp256k1HdWallet } from '@cosmjs/proto-signing'
 import { add } from 'ionicons/icons'
 
 // const apiEndpoint='http://18.220.101.192:26657'; // ? 1317 ? 26658
@@ -19,7 +19,7 @@ const Tab3: React.FC = () => {
   const [showToast1, setShowToast1] = useState(false)
 
   const makeFaucet = async () => {
-    const newWallet = await DirectSecp256k1Wallet.generate(12)
+    const newWallet = await DirectSecp256k1HdWallet.generate(12)
     setNewMnemonic(newWallet.mnemonic)
     setShowToast1(true)
     // const faucet = await Faucet.make(
